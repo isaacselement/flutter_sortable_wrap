@@ -125,6 +125,7 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
           ),
         ),
       ];
+
       /// insert or append a ghost/clone view
       if (ghostType != GhostType.None) {
         double spacing = element.parent.widget.spacing;

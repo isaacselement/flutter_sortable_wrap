@@ -11,21 +11,20 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  List<int> array = [];
+  List<int> yourDataArray = [];
 
   @override
   void initState() {
     super.initState();
 
-    array.clear();
-    for (int i = 0; i < 21; i++) array.add(i);
+    yourDataArray.clear();
+    for (int i = 0; i < 21; i++) yourDataArray.add(i);
   }
 
   @override
   Widget build(BuildContext context) {
     iDebugLog('App rebuild!!!!');
     Color alphaColor(Color color, {int alpha = 64}) => color.withAlpha(alpha);
-    Widget boxText(String text) => SizedBox(width: 72, height: 72, child: Center(child: Text(text)));
     List<Color> colors = [
       Colors.redAccent,
       Colors.blueAccent,
@@ -35,6 +34,11 @@ class AppState extends State<App> {
       Colors.purpleAccent,
     ];
     colors = colors.map((e) => alphaColor(e)).toList();
+    Widget boxText(String text) => SizedBox(width: 72, height: 72, child: Center(child: Text(text)));
+    List<Widget> children = [
+      for (int i = 0; i < yourDataArray.length; i++)
+        ColoredBox(color: colors[yourDataArray[i] % colors.length], child: boxText('${yourDataArray[i]}'))
+    ];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -43,14 +47,15 @@ class AppState extends State<App> {
             alignment: Alignment.topCenter,
             color: Colors.white.withAlpha(64),
             child: SortableWrap(
-              children: [
-                for (int i = 0; i < array.length; i++) ColoredBox(color: colors[array[i] % colors.length], child: boxText('${array[i]}')),
-              ],
+              children: children,
               onSorted: (int oldIndex, int newIndex) {
                 setState(() {
-                  array.insert(newIndex, array.removeAt(oldIndex));
-                  iDebugLog('=======>>>>> array: $array');
+                  yourDataArray.insert(newIndex, yourDataArray.removeAt(oldIndex));
+                  iDebugLog('Data sorted after >>>>>: $yourDataArray');
                 });
+              },
+              onSortStart: (int index) {
+                iDebugLog('Data sorted before >>>>>: $yourDataArray');
               },
               spacing: 10,
               runSpacing: 15,

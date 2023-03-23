@@ -1,5 +1,5 @@
 name: flutter_sortable_wrap
-description: A Reorder/Sort Wrap Widget. Written with pure dart, supported both iOS/Android/Web and Macos/Linux/Windows.
+description: A Reorder-able/Sortable/Rearrange-able Wrap Widget. Written with pure dart, support both iOS/Android/Web and Macos/Linux/Windows.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ description: A Reorder/Sort Wrap Widget. Written with pure dart, supported both 
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/isaacselement/flutter_sortable_wrap
 
 environment:

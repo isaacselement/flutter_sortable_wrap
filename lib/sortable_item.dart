@@ -47,7 +47,8 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
     /// dragging in the same row/line, just return
     if (isDraggingInSameRow) return;
 
-    /// TODO ... Hit the first/last one animation effect issue ...
+    /// TODO ... Hit the first/last one, in this case animation effect issue ...
+    /// TODO ... Dragging one is the first/last one, in this case animation effect issue
 
     /// stick a ghost for the last/first position element
     if (isSlideToRight) {
@@ -110,17 +111,17 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
           left: 0,
           right: 0,
           bottom: 0,
-          child: DragTarget<Widget>(
-            builder: (BuildContext context, List<Widget?> candidateData, List<dynamic> rejectedData) {
+          child: DragTarget<SortableElement>(
+            builder: (BuildContext context, List<SortableElement?> candidateData, List<dynamic> rejectedData) {
               return SizedBox();
               // return ColoredBox(color: Colors.grey.withAlpha(128), child: SizedBox());  // for debug :)
             },
-            onWillAccept: (Widget? toAccept) {
+            onWillAccept: (SortableElement? toAccept) {
               if (toAccept == null) return false;
               onEventHit(this, toAccept);
               return true;
             },
-            onAccept: (Widget accepted) {},
+            onAccept: (SortableElement accepted) {},
             onLeave: (Object? leaving) {},
           ),
         ),
@@ -190,4 +191,4 @@ class SortableElement {
 
 enum GhostType { None, Previous, Next }
 
-typedef OnEventHit = void Function(SortableItemState state, Widget accept);
+typedef OnEventHit = void Function(SortableItemState state, SortableElement accept);

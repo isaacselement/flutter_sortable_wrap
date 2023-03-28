@@ -197,10 +197,11 @@ class SortableWrapState extends State<SortableWrap> {
       onDragFinished();
     }
 
-    return Draggable<Widget>(
-      /// A key is needed, for keeping DraggableState when inner setState called.
+    return Draggable<SortableElement>(
+      /// a key is needed, for keeping DraggableState when inner setState called.
       key: ValueKey(index),
-      data: element.view,
+      /// the data passing to DragTarget and its callbacks
+      data: element,
       child: Builder(builder: (context) {
         anyElementContext = context;
         return element.view;
@@ -218,7 +219,6 @@ class SortableWrapState extends State<SortableWrap> {
           borderRadius: BorderRadius.zero,
         ),
       ),
-      childWhenDragging: IgnorePointer(ignoring: true, child: Opacity(opacity: 0.2, child: element.view)),
       onDragEnd: onDragEnd,
       onDragStarted: onDragStarted,
       onDragCompleted: onDragCompleted,
@@ -227,9 +227,9 @@ class SortableWrapState extends State<SortableWrap> {
   }
 
   /// Events
-  void eventDoRollingInDragging(SortableItemState beHitItemState, Widget draggingWidget) {
+  void eventDoRollingInDragging(SortableItemState beHitItemState, SortableElement holdingElement) {
     assert(draggingElement != null, 'Dragging status is a mess now, please check it out.');
-    assert(draggingElement?.view == draggingWidget, 'Got a different dragging view, please check it out.');
+    assert(draggingElement == holdingElement, 'Got a different dragging view, please check it out.');
 
     SortableElement dragging = draggingElement!;
     SortableElement element = beHitItemState.widget.element;

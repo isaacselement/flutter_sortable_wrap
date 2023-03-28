@@ -1,5 +1,7 @@
 
-### If you got some error like below when you switching the different version of FlutterSdk, just `flutter clean`.
+### If you got some error like below when you switching the different version of FlutterSdk, just 
+
+`cd example/` && `flutter clean`
 
 ````
 

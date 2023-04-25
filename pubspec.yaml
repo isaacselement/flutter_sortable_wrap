@@ -15,7 +15,7 @@ description: A Reorder-able/Sortable/Rearrange-able Wrap Widget. Written with pu
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/isaacselement/flutter_sortable_wrap
 
 environment:

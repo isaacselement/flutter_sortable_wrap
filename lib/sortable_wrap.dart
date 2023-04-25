@@ -12,6 +12,7 @@ class SortableWrap extends StatefulWidget {
     this.onSortCancel,
     this.spacing = 0.0,
     this.runSpacing = 0.0,
+    this.options,
   }) : super(key: key);
 
   final List<Widget> children;
@@ -22,9 +23,12 @@ class SortableWrap extends StatefulWidget {
   final void Function(int index)? onSortCancel;
 
   /// TODO ... To complete the remaining properties that need to pass to [Wrap] ...
-  /// Properties pass to the official [Wrap]
+  /// Properties pass to the official [Wrap] widget
   final double spacing;
   final double runSpacing;
+
+  /// Widget settings
+  final SortableWrapOptions? options;
 
   @override
   State<SortableWrap> createState() => SortableWrapState();
@@ -51,6 +55,11 @@ class SortableWrapState extends State<SortableWrap> {
 
   /// Cached array that representing the realtime swap index when a drag is under way
   List<SortableElement> animationElements = [];
+
+  /// Widget settings
+  SortableWrapOptions? _options;
+
+  SortableWrapOptions get options => widget.options ?? (_options ??= SortableWrapOptions());
 
   @override
   void initState() {
@@ -197,33 +206,36 @@ class SortableWrapState extends State<SortableWrap> {
       onDragFinished();
     }
 
-    return Draggable<SortableElement>(
-      /// a key is needed, for keeping DraggableState when inner setState called.
-      key: ValueKey(index),
-      /// the data passing to DragTarget and its callbacks
-      data: element,
-      child: Builder(builder: (context) {
-        anyElementContext = context;
-        return element.view;
-      }),
-      feedback: Transform(
-        transform: new Matrix4.rotationZ(0),
-        alignment: FractionalOffset.topLeft,
-        child: Material(
-          elevation: 18.0,
-          child: element.view,
-          // child: Card(child: element.view),
-          shadowColor: Colors.transparent,
-          // shadowColor: Colors.grey,
-          color: Colors.transparent,
-          borderRadius: BorderRadius.zero,
-        ),
-      ),
-      onDragEnd: onDragEnd,
-      onDragStarted: onDragStarted,
-      onDragCompleted: onDragCompleted,
-      onDraggableCanceled: onDraggableCanceled,
-    );
+    /// a key is needed, for keeping DraggableState when inner setState called.
+    ValueKey valueKey = ValueKey(index);
+    Widget childBuilder = Builder(builder: (context) {
+      /// cache a context for calculate size on starting drag
+      anyElementContext = context;
+      return options.draggableChildBuilder?.call(element.view) ?? element.view;
+    });
+    return options.isLongPressDraggable
+        ? LongPressDraggable<SortableElement>(
+            /// the data passing to DragTarget and its callbacks
+            data: element,
+            key: valueKey,
+            child: childBuilder,
+            feedback: options.draggableFeedbackBuilder(element.view),
+            onDragEnd: onDragEnd,
+            onDragStarted: onDragStarted,
+            onDragCompleted: onDragCompleted,
+            onDraggableCanceled: onDraggableCanceled,
+          )
+        : Draggable<SortableElement>(
+            /// the data passing to DragTarget and its callbacks
+            data: element,
+            key: valueKey,
+            child: childBuilder,
+            feedback: options.draggableFeedbackBuilder(element.view),
+            onDragEnd: onDragEnd,
+            onDragStarted: onDragStarted,
+            onDragCompleted: onDragCompleted,
+            onDraggableCanceled: onDraggableCanceled,
+          );
   }
 
   /// Events
@@ -258,5 +270,35 @@ class SortableWrapState extends State<SortableWrap> {
 
     /// Make sure you see the right thing on the right position
     setState(() {});
+  }
+}
+
+/// Options for configuring the UI/Animation
+class SortableWrapOptions {
+  /// should long press and then become draggable
+  bool isLongPressDraggable = false;
+
+  Widget Function(Widget child)? draggableChildBuilder;
+
+  /// the dragging moving view builder, typically return a widget wrap by [Material]
+  Widget Function(Widget child) draggableFeedbackBuilder = (Widget child) {
+    return Material(
+      elevation: 18.0,
+      child: child,
+      color: Colors.transparent,
+      shadowColor: Colors.transparent,
+      borderRadius: BorderRadius.zero,
+    );
+  };
+
+  SortableWrapOptions();
+
+  /// clone a new instance
+  SortableWrapOptions clone() {
+    SortableWrapOptions newInstance = SortableWrapOptions();
+
+    newInstance.draggableFeedbackBuilder = draggableFeedbackBuilder;
+
+    return newInstance;
   }
 }

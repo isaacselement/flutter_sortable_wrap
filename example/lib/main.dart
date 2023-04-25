@@ -24,7 +24,7 @@ class AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     iDebugLog('App rebuild!!!!');
-    Color alphaColor(Color color, {int alpha = 64}) => color.withAlpha(alpha);
+    Color alphaColor(Color color, {int alpha = 128}) => color.withAlpha(alpha);
     List<Color> colors = [
       Colors.redAccent,
       Colors.blueAccent,
@@ -39,6 +39,18 @@ class AppState extends State<App> {
       for (int i = 0; i < yourDataArray.length; i++)
         ColoredBox(color: colors[yourDataArray[i] % colors.length], child: boxText('${yourDataArray[i]}'))
     ];
+
+    SortableWrapOptions options = SortableWrapOptions();
+    options.draggableFeedbackBuilder = (Widget child) {
+      return Material(
+        elevation: 18.0,
+        child: Card(child: child),
+        shadowColor: Colors.grey,
+        color: Colors.transparent,
+        borderRadius: BorderRadius.zero,
+      );
+    };
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -59,6 +71,7 @@ class AppState extends State<App> {
               },
               spacing: 10,
               runSpacing: 15,
+              options: options,
             ),
           ),
         ),

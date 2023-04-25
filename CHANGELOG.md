@@ -1,4 +1,12 @@
 
+# 1.0.4
+
+* Support long press and the become draggable.
+
+# 1.0.3
+
+* Refactoring code
+
 # 1.0.2
 
 * SortableWrap - Refactor the [SortableWrapWidget] name to [SortableWrap].

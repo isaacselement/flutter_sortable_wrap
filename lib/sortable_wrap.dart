@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_sortable_wrap/sortable_item.dart';
 import 'package:flutter_sortable_wrap/sortable_utils.dart';
 
@@ -68,15 +67,22 @@ class SortableWrapState extends State<SortableWrap> {
   }
 
   @override
-  void didUpdateWidget(covariant SortableWrap old) {
-    super.didUpdateWidget(old);
-    initCachedWithChildren();
+  void didUpdateWidget(covariant SortableWrap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.children.length != oldWidget.children.length) {
+      /// TODO ... enhance when dragging ...
+      initCachedWithChildren();
+    }
   }
 
   void initCachedWithChildren() {
     preservedElements.clear();
     for (int i = 0; i < widget.children.length; i++) {
-      preservedElements.add(SortableElement(widget.children[i], i)..parent = this);
+      SortableElement e = SortableElement();
+      e.view = widget.children[i];
+      e.originalIndex = i;
+      e.parent = this;
+      preservedElements.add(e);
     }
     syncPreservedCacheIndexes();
 
@@ -153,7 +159,13 @@ class SortableWrapState extends State<SortableWrap> {
       });
 
       /// invoke caller's callback
-      safeInvoke(() => oldIndex != newIndex ? widget.onSorted(oldIndex, newIndex) : widget.onSortCancel?.call(oldIndex));
+      safeInvoke(() {
+        if (oldIndex == newIndex) {
+          widget.onSortCancel?.call(oldIndex);
+        } else {
+          widget.onSorted(oldIndex, newIndex);
+        }
+      });
     }
 
     /// Drag started callback

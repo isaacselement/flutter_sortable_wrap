@@ -1,11 +1,14 @@
+import 'package:example/page/page_next.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/flutter_sortable_wrap.dart';
 
 void main() {
-  runApp(App());
+  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: App()));
 }
 
 class App extends StatefulWidget {
+  const App({Key key}) : super(key: key);
+
   @override
   AppState createState() => AppState();
 }
@@ -18,7 +21,9 @@ class AppState extends State<App> {
     super.initState();
 
     yourDataArray.clear();
-    for (int i = 0; i < 21; i++) yourDataArray.add(i);
+    for (int i = 0; i < 21; i++) {
+      yourDataArray.add(i);
+    }
   }
 
   @override
@@ -51,31 +56,39 @@ class AppState extends State<App> {
       );
     };
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SafeArea(
-          child: Container(
-            alignment: Alignment.topCenter,
-            color: Colors.white.withAlpha(64),
-            child: SortableWrap(
-              children: children,
-              onSorted: (int oldIndex, int newIndex) {
-                setState(() {
-                  yourDataArray.insert(newIndex, yourDataArray.removeAt(oldIndex));
-                  iDebugLog('Data sorted after >>>>>: $yourDataArray');
-                });
-              },
-              onSortStart: (int index) {
-                iDebugLog('Data sorted before >>>>>: $yourDataArray');
-              },
-              spacing: 10,
-              runSpacing: 15,
-              options: options,
-            ),
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          alignment: Alignment.topCenter,
+          color: Colors.white.withAlpha(64),
+          child: SortableWrap(
+            children: children,
+            onSorted: (int oldIndex, int newIndex) {
+              setState(() {
+                yourDataArray.insert(newIndex, yourDataArray.removeAt(oldIndex));
+                iDebugLog('Data sorted after >>>>>: $yourDataArray');
+              });
+            },
+            onSortStart: (int index) {
+              iDebugLog('Data sorted before >>>>>: $yourDataArray');
+            },
+            spacing: 10,
+            runSpacing: 15,
+            options: options,
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.add), onPressed: goToNextPage),
     );
+  }
+
+  void goToNextPage() {
+    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+      pageBuilder: (ctx, one, two) => const PageNext(),
+      transitionsBuilder: (ctx, one, two, child) => SlideTransition(
+        position: Tween<Offset>(begin: const Offset(1.0, 0.0), end: const Offset(0.0, 0.0)).animate(one),
+        child: child,
+      ),
+    ));
   }
 }

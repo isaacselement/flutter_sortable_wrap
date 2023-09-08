@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/sortable_wrap.dart';
 
@@ -73,8 +75,8 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
   @override
   void initState() {
     super.initState();
-    slideToRightController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
-    slideToLeftController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    slideToRightController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    slideToLeftController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
   }
 
   @override
@@ -93,11 +95,13 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
     Widget _capacityAnimate(Widget child) {
       child = SlideTransition(
         child: child,
-        position: Tween<Offset>(begin: const Offset(0.0, 0.0), end: const Offset(1.0, 0.0)).animate(slideToRightController),
+        position:
+            Tween<Offset>(begin: const Offset(0.0, 0.0), end: const Offset(1.0, 0.0)).animate(slideToRightController),
       );
       child = SlideTransition(
         child: child,
-        position: Tween<Offset>(begin: const Offset(0.0, 0.0), end: const Offset(-1.0, 0.0)).animate(slideToLeftController),
+        position:
+            Tween<Offset>(begin: const Offset(0.0, 0.0), end: const Offset(-1.0, 0.0)).animate(slideToLeftController),
       );
       return child;
     }
@@ -113,7 +117,7 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
           bottom: 0,
           child: DragTarget<SortableElement>(
             builder: (BuildContext context, List<SortableElement?> candidateData, List<dynamic> rejectedData) {
-              return SizedBox();
+              return const SizedBox();
               // return ColoredBox(color: Colors.grey.withAlpha(128), child: SizedBox());  // for debug :)
             },
             onWillAccept: (SortableElement? toAccept) {
@@ -134,7 +138,8 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
         bool isFrontGhost = ghostType == GhostType.Previous;
         double left = isFrontGhost ? -width - spacing : width + spacing;
         SortableElement sibling = isFrontGhost ? element.previousToMe : element.nextToMe;
-        children.insert(isFrontGhost ? 0 : children.length, Positioned(top: 0, bottom: 0, left: left, child: sibling.view));
+        children.insert(
+            isFrontGhost ? 0 : children.length, Positioned(top: 0, bottom: 0, left: left, child: sibling.view));
       }
       return Stack(clipBehavior: Clip.none, children: children);
     }
@@ -145,25 +150,23 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
 
 /// Data or Relation Model
 class SortableElement {
-  SortableElement(this.view, this.originalIndex);
-
   /// The caller's view
-  final Widget view;
+  late Widget view;
 
   /// The caller's children index, the most original index
-  final int originalIndex;
-
-  /// The [SortableItem] widget i'm binding to
-  late SortableItem widget;
-
-  /// The [SortableItemState] widget i'm binding to, corresponding to this [widget]
-  late SortableItemState state;
+  late int originalIndex;
 
   /// The [SortableWrapState] context/state i'm staying in
   late SortableWrapState parent;
 
   /// Element index before dragging start
   late int preservedIndex;
+
+  /// The [SortableItem] widget i'm binding to
+  late SortableItem widget;
+
+  /// The [SortableItemState] widget i'm binding to, corresponding to this [widget]
+  late SortableItemState state;
 
   /// Element index of on rolling what you are looking at
   int get visibleIndex => parent.animationElements.indexOf(this);

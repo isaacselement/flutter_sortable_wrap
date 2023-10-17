@@ -12,6 +12,7 @@ class SortableWrap extends StatefulWidget {
     this.spacing = 0.0,
     this.runSpacing = 0.0,
     this.options,
+    this.updateWhenRebuild = false,
   }) : super(key: key);
 
   final List<Widget> children;
@@ -28,6 +29,7 @@ class SortableWrap extends StatefulWidget {
 
   /// Widget settings
   final SortableWrapOptions? options;
+  final bool updateWhenRebuild;
 
   @override
   State<SortableWrap> createState() => SortableWrapState();
@@ -69,7 +71,7 @@ class SortableWrapState extends State<SortableWrap> {
   @override
   void didUpdateWidget(covariant SortableWrap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.children.length != oldWidget.children.length) {
+    if (widget.updateWhenRebuild || widget.children.length != oldWidget.children.length) {
       /// TODO ... enhance when dragging ...
       initCachedWithChildren();
     }

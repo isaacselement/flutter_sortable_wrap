@@ -1,5 +1,11 @@
 [![pub package](https://img.shields.io/pub/v/flutter_sortable_wrap.svg)](https://pub.dev/packages/flutter_sortable_wrap)
 
+---
+Update for forked version
+- Updated to null safety version sdk
+- Added `updateWhenRebuild` property to update the list when rebuild the widget
+---
+
 ##### Build & Run `example/lib/main.dart` on iOS/Android/Chrome/MacOS for more demonstrations
 `cd example/; flutter clean; flutter run -d macOS`
 

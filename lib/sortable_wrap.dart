@@ -71,7 +71,7 @@ class SortableWrapState extends State<SortableWrap> {
   @override
   void didUpdateWidget(covariant SortableWrap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.updateWhenRebuild || widget.children.length != oldWidget.children.length) {
+    if ((!isDragging && widget.updateWhenRebuild) || widget.children.length != oldWidget.children.length) {
       /// TODO ... enhance when dragging ...
       initCachedWithChildren();
     }

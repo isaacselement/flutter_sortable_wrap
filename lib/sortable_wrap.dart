@@ -13,6 +13,7 @@ class SortableWrap extends StatefulWidget {
     this.runSpacing = 0.0,
     this.options,
     this.updateWhenRebuild = false,
+    this.freezes,
   }) : super(key: key);
 
   final List<Widget> children;
@@ -30,6 +31,7 @@ class SortableWrap extends StatefulWidget {
   /// Widget settings
   final SortableWrapOptions? options;
   final bool updateWhenRebuild;
+  final List<int>? freezes;
 
   @override
   State<SortableWrap> createState() => SortableWrapState();
@@ -60,7 +62,8 @@ class SortableWrapState extends State<SortableWrap> {
   /// Widget settings
   SortableWrapOptions? _options;
 
-  SortableWrapOptions get options => widget.options ?? (_options ??= SortableWrapOptions());
+  SortableWrapOptions get options =>
+      widget.options ?? (_options ??= SortableWrapOptions());
 
   @override
   void initState() {
@@ -71,7 +74,8 @@ class SortableWrapState extends State<SortableWrap> {
   @override
   void didUpdateWidget(covariant SortableWrap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if ((!isDragging && widget.updateWhenRebuild) || widget.children.length != oldWidget.children.length) {
+    if ((!isDragging && widget.updateWhenRebuild) ||
+        widget.children.length != oldWidget.children.length) {
       /// TODO ... enhance when dragging ...
       initCachedWithChildren();
     }
@@ -116,7 +120,8 @@ class SortableWrapState extends State<SortableWrap> {
         return Wrap(
           spacing: widget.spacing,
           runSpacing: widget.runSpacing,
-          children: animationElements.map((e) => enclosedWithDraggable(e)).toList(),
+          children:
+              animationElements.map((e) => enclosedWithDraggable(e)).toList(),
         );
       },
     );
@@ -129,12 +134,18 @@ class SortableWrapState extends State<SortableWrap> {
   Widget enclosedWithDraggable(SortableElement element) {
     int index = preservedElements.indexOf(element);
 
+    bool isFreeze = widget.freezes?.contains(index) ?? false;
+
     /// A. Return the widget in dragging mode
     if (isDragging) {
       if (isDraggingMe(element)) {
-        return IgnorePointer(ignoring: true, child: Opacity(opacity: 0.2, child: element.view));
+        return IgnorePointer(
+            ignoring: true, child: Opacity(opacity: 0.2, child: element.view));
       } else {
-        return SortableItem(key: ValueKey(index), element: element, onEventHit: eventDoRollingInDragging);
+        return SortableItem(
+            key: ValueKey(index),
+            element: element,
+            onEventHit: eventDoRollingInDragging);
       }
     }
 
@@ -178,7 +189,8 @@ class SortableWrapState extends State<SortableWrap> {
 
       /// calculate the row & column & count/size at this moment, for window may resizeable when running as Desktop App
       assert(wrapperContext.size != null, 'Wrap\'s size cannot be determined!');
-      assert(anyElementContext.size != null, 'Element\'s size cannot be determined!');
+      assert(anyElementContext.size != null,
+          'Element\'s size cannot be determined!');
       wrapperSize = wrapperContext.size!;
       anyElementSize = anyElementContext.size!;
       double width = wrapperSize.width;
@@ -187,14 +199,20 @@ class SortableWrapState extends State<SortableWrap> {
       double eh = anyElementSize.height;
       elementCountPerRow = width ~/ ew;
       elementCountPerColumn = height ~/ eh;
-      iDebugLog('[START] count on per row: $elementCountPerRow, count on per column: $elementCountPerColumn');
-      while (elementCountPerRow * ew + (elementCountPerRow - 1) * widget.spacing > width) {
+      iDebugLog(
+          '[START] count on per row: $elementCountPerRow, count on per column: $elementCountPerColumn');
+      while (
+          elementCountPerRow * ew + (elementCountPerRow - 1) * widget.spacing >
+              width) {
         elementCountPerRow--;
       }
-      while (elementCountPerColumn * eh + (elementCountPerColumn - 1) * widget.runSpacing > height) {
+      while (elementCountPerColumn * eh +
+              (elementCountPerColumn - 1) * widget.runSpacing >
+          height) {
         elementCountPerColumn--;
       }
-      iDebugLog('[FINAL] count on per row: $elementCountPerRow, count on per column: $elementCountPerColumn');
+      iDebugLog(
+          '[FINAL] count on per row: $elementCountPerRow, count on per column: $elementCountPerColumn');
 
       /// set current dragging element
       setState(() {
@@ -227,6 +245,9 @@ class SortableWrapState extends State<SortableWrap> {
       anyElementContext = context;
       return options.draggableChildBuilder?.call(element.view) ?? element.view;
     });
+    if (isFreeze) {
+      return childBuilder;
+    }
     return options.isLongPressDraggable
         ? LongPressDraggable<SortableElement>(
             /// the data passing to DragTarget and its callbacks
@@ -253,21 +274,27 @@ class SortableWrapState extends State<SortableWrap> {
   }
 
   /// Events
-  void eventDoRollingInDragging(SortableItemState beHitItemState, SortableElement holdingElement) {
-    assert(draggingElement != null, 'Dragging status is a mess now, please check it out.');
-    assert(draggingElement == holdingElement, 'Got a different dragging view, please check it out.');
+  void eventDoRollingInDragging(
+      SortableItemState beHitItemState, SortableElement holdingElement) {
+    assert(draggingElement != null,
+        'Dragging status is a mess now, please check it out.');
+    assert(draggingElement == holdingElement,
+        'Got a different dragging view, please check it out.');
 
     SortableElement dragging = draggingElement!;
     SortableElement element = beHitItemState.widget.element;
 
     int toIndex = animationElements.indexOf(element);
     int draggingIndex = animationElements.indexOf(dragging);
-    bool isDraggingInSameRow = toIndex ~/ elementCountPerRow == draggingIndex ~/ elementCountPerRow;
+    bool isDraggingInSameRow =
+        toIndex ~/ elementCountPerRow == draggingIndex ~/ elementCountPerRow;
 
     /// To lower index means user dragging to left, user dragging to left or top, the hit target should animate to right
     bool isDraggingToLowerIndex = toIndex < draggingIndex;
     int i = isDraggingToLowerIndex ? draggingIndex - 1 : draggingIndex + 1;
-    for (; isDraggingToLowerIndex ? i >= toIndex : i <= toIndex; isDraggingToLowerIndex ? i-- : i++) {
+    for (;
+        isDraggingToLowerIndex ? i >= toIndex : i <= toIndex;
+        isDraggingToLowerIndex ? i-- : i++) {
       SortableElement e = animationElements[i];
 
       /// Swap the index in cached data

@@ -285,6 +285,9 @@ class SortableWrapState extends State<SortableWrap> {
     SortableElement element = beHitItemState.widget.element;
 
     int toIndex = animationElements.indexOf(element);
+    if (widget.freezes?.contains(toIndex) == true) {
+      return;
+    }
     int draggingIndex = animationElements.indexOf(dragging);
     bool isDraggingInSameRow =
         toIndex ~/ elementCountPerRow == draggingIndex ~/ elementCountPerRow;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/flutter_sortable_wrap.dart';
 
 class PageNext extends StatefulWidget {
-  const PageNext({Key key}) : super(key: key);
+  const PageNext({Key? key}) : super(key: key);
 
   @override
   PageNextState createState() => PageNextState();

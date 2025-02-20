@@ -7,7 +7,7 @@ void main() {
 }
 
 class App extends StatefulWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   AppState createState() => AppState();
@@ -39,10 +39,13 @@ class AppState extends State<App> {
       Colors.purpleAccent,
     ];
     colors = colors.map((e) => alphaColor(e)).toList();
-    Widget boxText(String text) => SizedBox(width: 72, height: 72, child: Center(child: Text(text)));
+    Widget boxText(String text) =>
+        SizedBox(width: 72, height: 72, child: Center(child: Text(text)));
     List<Widget> children = [
       for (int i = 0; i < yourDataArray.length; i++)
-        ColoredBox(color: colors[yourDataArray[i] % colors.length], child: boxText('${yourDataArray[i]}'))
+        ColoredBox(
+            color: colors[yourDataArray[i] % colors.length],
+            child: boxText('${yourDataArray[i]}'))
     ];
 
     SortableWrapOptions options = SortableWrapOptions();
@@ -65,7 +68,8 @@ class AppState extends State<App> {
             children: children,
             onSorted: (int oldIndex, int newIndex) {
               setState(() {
-                yourDataArray.insert(newIndex, yourDataArray.removeAt(oldIndex));
+                yourDataArray.insert(
+                    newIndex, yourDataArray.removeAt(oldIndex));
                 iDebugLog('Data sorted after >>>>>: $yourDataArray');
               });
             },
@@ -78,7 +82,8 @@ class AppState extends State<App> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.add), onPressed: goToNextPage),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add), onPressed: goToNextPage),
     );
   }
 
@@ -86,7 +91,9 @@ class AppState extends State<App> {
     Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
       pageBuilder: (ctx, one, two) => const PageNext(),
       transitionsBuilder: (ctx, one, two, child) => SlideTransition(
-        position: Tween<Offset>(begin: const Offset(1.0, 0.0), end: const Offset(0.0, 0.0)).animate(one),
+        position: Tween<Offset>(
+                begin: const Offset(1.0, 0.0), end: const Offset(0.0, 0.0))
+            .animate(one),
         child: child,
       ),
     ));

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/flutter_sortable_wrap.dart';
 
 class PageNext extends StatefulWidget {
-  const PageNext({Key key}) : super(key: key);
+  const PageNext({Key? key}) : super(key: key);
 
   @override
   PageNextState createState() => PageNextState();
@@ -38,8 +38,10 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
   MyDelegate();
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    Widget boxText(String text) => SizedBox(width: 72, height: 72, child: Center(child: Text(text)));
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    Widget boxText(String text) =>
+        SizedBox(width: 72, height: 72, child: Center(child: Text(text)));
 
     return SortableWrap(
       onSorted: (int oldIndex, int newIndex) {

@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sortable_wrap/sortable_utils.dart';
 import 'package:flutter_sortable_wrap/sortable_wrap.dart';
 
 class SortableItem extends StatefulWidget {
@@ -34,7 +35,7 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
   late int destinationIndex;
 
   /// Start the rolling animation
-  void startAnimation(bool isDraggingInSameRow) {
+  void startAnimation(bool isDraggingInSameRow, int draggingIndex) {
     bool isSlideToRight = destinationIndex > sourceIndex;
     bool isSlideToLeft = destinationIndex < sourceIndex;
     TickerFuture? animationFuture;
@@ -49,17 +50,21 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
     /// dragging in the same row/line, just return
     if (isDraggingInSameRow) return;
 
-    /// TODO ... Hit the first/last one, in this case animation effect issue ...
-    /// TODO ... Dragging one is the first/last one, in this case animation effect issue
+    /// TODO ... Need a dependent ghost to roll out when hit the first(slide2left)/last(slide2right) one
+    /// "destinationIndex != draggingIndex" fix animation effect issue: Hit the first/last one or Dragging one is the first/last one
 
     /// stick a ghost for the last/first position element
     if (isSlideToRight) {
       if (element.isTheLastOne) {
-        setGhostType(GhostType.Next);
+        if (destinationIndex != draggingIndex) {
+          setGhostType(GhostType.Next);
+        }
       }
     } else if (isSlideToLeft) {
       if (element.isTheFirstOne) {
-        setGhostType(GhostType.Previous);
+        if (destinationIndex != draggingIndex) {
+          setGhostType(GhostType.Previous);
+        }
       }
     }
     if (ghostType != GhostType.None) {
@@ -135,11 +140,13 @@ class SortableItemState extends State<SortableItem> with TickerProviderStateMixi
       if (ghostType != GhostType.None) {
         double spacing = element.parent.widget.spacing;
         double width = element.parent.anyElementSize.width;
-        bool isFrontGhost = ghostType == GhostType.Previous;
-        double left = isFrontGhost ? -width - spacing : width + spacing;
-        SortableElement sibling = isFrontGhost ? element.previousToMe : element.nextToMe;
-        children.insert(
-            isFrontGhost ? 0 : children.length, Positioned(top: 0, bottom: 0, left: left, child: sibling.view));
+        bool isInFrontOfMe = ghostType == GhostType.Previous;
+        double x = isInFrontOfMe ? -width - spacing : width + spacing;
+        SortableElement sibling = isInFrontOfMe ? element.previousToMe : element.nextToMe;
+
+        /// x -> in front of me or behind me
+        Widget ghostView = Positioned(top: 0, bottom: 0, left: x, child: sibling.view);
+        children.insert(isInFrontOfMe ? 0 : children.length, ghostView);
       }
       return Stack(clipBehavior: Clip.none, children: children);
     }

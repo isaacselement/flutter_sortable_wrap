@@ -277,7 +277,7 @@ class SortableWrapState extends State<SortableWrap> {
       SortableItemState itemState = e.state;
       itemState.sourceIndex = sourceIndex;
       itemState.destinationIndex = destinationIndex;
-      itemState.startAnimation(isDraggingInSameRow);
+      itemState.startAnimation(isDraggingInSameRow, draggingIndex);
     }
 
     /// Make sure you see the right thing on the right position

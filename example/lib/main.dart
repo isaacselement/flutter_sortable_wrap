@@ -79,17 +79,20 @@ class AppState extends State<App> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.add), onPressed: goToNextPage),
-    );
-  }
-
-  void goToNextPage() {
-    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
-      pageBuilder: (ctx, one, two) => const PageNext(),
-      transitionsBuilder: (ctx, one, two, child) => SlideTransition(
-        position: Tween<Offset>(begin: const Offset(1.0, 0.0), end: const Offset(0.0, 0.0)).animate(one),
-        child: child,
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).push(
+            PageRouteBuilder(
+              pageBuilder: (ctx, one, two) => const PageNext(),
+              transitionsBuilder: (ctx, one, two, child) => SlideTransition(
+                position: Tween<Offset>(begin: const Offset(1.0, 0.0), end: const Offset(0.0, 0.0)).animate(one),
+                child: child,
+              ),
+            ),
+          );
+        },
       ),
-    ));
+    );
   }
 }

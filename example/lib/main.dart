@@ -7,7 +7,7 @@ void main() {
 }
 
 class App extends StatefulWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   AppState createState() => AppState();
@@ -46,6 +46,7 @@ class AppState extends State<App> {
     ];
 
     SortableWrapOptions options = SortableWrapOptions();
+    // options.isLongPressDraggable = true;
     options.draggableFeedbackBuilder = (Widget child) {
       return Material(
         elevation: 18.0,

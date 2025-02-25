@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/flutter_sortable_wrap.dart';
 
 class PageNext extends StatefulWidget {
-  const PageNext({Key key}) : super(key: key);
+  const PageNext({Key? key}) : super(key: key);
 
   @override
   PageNextState createState() => PageNextState();
@@ -46,11 +46,12 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
         iDebugLog('####### oldIndex: $oldIndex, newIndex: $newIndex');
       },
       children: List.generate(
-          10,
-          (index) => Padding(
-                padding: const EdgeInsets.all(2),
-                child: ColoredBox(color: Colors.grey, child: boxText('$index')),
-              )).toList(),
+        10,
+        (index) => Padding(
+          padding: const EdgeInsets.all(2),
+          child: ColoredBox(color: Colors.grey, child: boxText('$index')),
+        ),
+      ).toList(),
     );
   }
 

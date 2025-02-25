@@ -309,6 +309,8 @@ class SortableWrapOptions {
   SortableWrapOptions clone() {
     SortableWrapOptions newInstance = SortableWrapOptions();
 
+    newInstance.isLongPressDraggable = isLongPressDraggable;
+    newInstance.draggableChildBuilder = draggableChildBuilder;
     newInstance.draggableFeedbackBuilder = draggableFeedbackBuilder;
 
     return newInstance;
